@@ -6,6 +6,7 @@ require("dotenv").config();
 
 const authRoutes = require("./src/routes/auth.routes");
 const workspaceRoutes = require("./src/routes/workspace.routes");
+const projectsRoutes = require("./src/routes/projects.routes");
 
 const app = express();
 
@@ -41,5 +42,6 @@ app.get(
 
 app.use("/api/auth", authRoutes);
 app.use("/api/workspace", workspaceRoutes);
+app.use("/api/projects", projectsRoutes);
 
 app.listen(3000, () => console.log("Server running on 3000"));
