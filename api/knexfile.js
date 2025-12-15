@@ -5,11 +5,15 @@
  */
 module.exports = {
   development: {
-    client: "sqlite3",
+    client: "pg",
     connection: {
-      filename: "./dev.sqlite3",
+      host: "localhost",
+      port: 5433,
+      user: "app",
+      password: "app",
+      database: "app",
     },
-    useNullAsDefault: true,
+    migrations: { tableName: "knex_migrations" },
   },
 
   staging: {
