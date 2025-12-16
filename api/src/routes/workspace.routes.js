@@ -13,6 +13,12 @@ router.get(
 );
 
 router.get(
+  "/:workspaceId",
+  passport.authenticate("jwt", { session: false }),
+  WorkspaceController.getById
+);
+
+router.get(
   "/user/owner",
   passport.authenticate("jwt", { session: false }),
   WorkspaceController.getUserWorkspace

@@ -16,6 +16,15 @@ router.post("/login", AuthController.login);
 // @access  Public
 router.post("/register", AuthController.register);
 
+// @route   POST /api/auth/logout
+// @desc    Logout
+// @access  Private
+router.post(
+  "/logout",
+  passport.authenticate("jwt", { session: false }),
+  AuthController.logout
+);
+
 // @route   GET /api/auth/me
 // @desc    Get current user
 // @access  Private

@@ -132,7 +132,7 @@ export function AppSidebar() {
                 {workspaces.map((workspace, index) => (
                   <SidebarMenuItem key={index}>
                     <SidebarMenuButton asChild>
-                      <NavLink to={`/${index}`}>
+                      <NavLink to={`/workspace/${workspace.id}`}>
                         <IconFile />
                         <span>{workspace.name}</span>
                       </NavLink>
@@ -142,23 +142,6 @@ export function AppSidebar() {
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
-          {/* <SidebarGroup>
-          <SidebarGroupLabel>Your teams</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {items.map((item, index) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink to={`/${index}`}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup> */}
         </SidebarContent>
         <SidebarFooter>
           <NavUser
