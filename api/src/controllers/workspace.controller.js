@@ -16,6 +16,29 @@ class WorkspaceController {
     }
   };
 
+  getById = async (req, res) => {
+    const { workspaceId } = req.params ?? {};
+
+    if (!workspaceId)
+      return res.status(400).json({ message: "workspaceId is required" });
+
+    try {
+      const workspace = await db("workspaces")
+        .where({ id: workspaceId })
+        .first();
+
+      if (!workspace) return res.status(404).json({ message: "Not found" });
+
+      const models = await db("models").where({ workspaceId });
+
+      return res.json({ workspace, models });
+    } catch (err) {
+      console.error("Error happened on server:", err);
+
+      return res.status(500).json({ message: err.message });
+    }
+  };
+
   getUserWorkspace = async (req, res) => {
     const user = req.user;
     try {
@@ -56,13 +79,17 @@ class WorkspaceController {
 
   createWorkspace = async (req, res) => {
     const user = req.user;
-    const { name, slug } = req.body;
+    const { name } = req.body;
 
     try {
+      const schemaName = `p_${user.id}_${Date.now()}_dev`;
+
+      await db.schema.createSchemaIfNotExists(schemaName);
+
       const [workspace] = await db("workspaces")
         .insert({
           name: name,
-          slug: slug,
+          schemaName: schemaName,
           ownerId: user.id,
         })
         .returning("*");

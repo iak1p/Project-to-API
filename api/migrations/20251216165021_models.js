@@ -3,17 +3,16 @@
  * @returns { Promise<void> }
  */
 exports.up = async function (knex) {
-  await knex.schema.createTable("workspaces", (table) => {
+  await knex.schema.createTable("models", (table) => {
     table.increments("id").primary();
-    table.string("name").unique();
-    table.string("slug").unique();
-    table.string("schemaName").unique();
+    table.string("name").notNullable();
     table
-      .integer("ownerId")
+      .integer("workspaceId")
       .unsigned()
       .references("id")
-      .inTable("users")
-      .onDelete("CASCADE");
+      .inTable("workspaces")
+      .onDelete("CASCADE")
+      .notNullable();
     table.datetime("createdAt").notNullable().defaultTo(knex.fn.now());
   });
 };

@@ -1,13 +1,5 @@
 "use client";
 
-// import {
-//   IconCreditCard,
-//   IconDotsVertical,
-//   IconLogout,
-//   IconNotification,
-//   IconUserCircle,
-// } from "@tabler/icons-react";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -24,8 +16,14 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { IconSettings, IconUserCircle } from "@tabler/icons-react";
-import { NavLink } from "react-router";
+import {
+  IconDotsVertical,
+  IconLogout,
+  IconSettings,
+  IconUserCircle,
+} from "@tabler/icons-react";
+import { NavLink, useNavigate } from "react-router";
+import { toast } from "sonner";
 
 export function NavUser({
   user,
@@ -36,7 +34,19 @@ export function NavUser({
     avatar: string;
   };
 }) {
+  const navigate = useNavigate();
   const { isMobile } = useSidebar();
+
+  const logout = async () => {
+    await fetch("http://localhost:3000/api/auth/logout", {
+      credentials: "include",
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    }).then(() => {
+      toast.success("Logout successful!");
+      navigate("/login");
+    });
+  };
 
   return (
     <SidebarMenu>
@@ -57,7 +67,7 @@ export function NavUser({
                   {user.email}
                 </span>
               </div>
-              {/* <IconDotsVertical className="ml-auto size-4" /> */}
+              <IconDotsVertical className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -94,8 +104,8 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              {/* <IconLogout /> */}
+            <DropdownMenuItem onClick={() => logout()}>
+              <IconLogout />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>

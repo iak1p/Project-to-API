@@ -79,6 +79,22 @@ class AuthController {
       return res.status(500).json({ message: err.message });
     }
   };
+
+  logout = async () => {
+    try {
+      res.clearCookie("token", {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: false,
+      });
+
+      return res.status(200).json({ ok: true });
+    } catch (err) {
+      console.error("Error happened on server:", err);
+
+      return res.status(500).json({ message: err.message });
+    }
+  };
 }
 
 module.exports = new AuthController();
