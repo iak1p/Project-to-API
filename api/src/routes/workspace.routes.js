@@ -7,7 +7,7 @@ const router = new Router();
 //Import controllers
 const WorkspaceController = require("../controllers/workspace.controller");
 
-// Test endpoint (no auth) - MUST be before /:workspaceId
+// Test endpoint (no auth)
 router.get('/test-deploy', async (req, res) => {
   try {
     const models = await db('models').where({ workspaceId: 3 });
