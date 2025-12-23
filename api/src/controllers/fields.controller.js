@@ -34,9 +34,12 @@ class FieldsController {
           .json({ message: "Field with this name already exists" });
       }
 
-      const relatedModel = await db("models")
-        .where({ id: relationModelId })
-        .first();
+      let relatedModel = null;
+      if (relationModelId) {
+        relatedModel = await db("models")
+          .where({ id: relationModelId })
+          .first();
+      }
 
       if (relationModelId && !relatedModel)
         return res

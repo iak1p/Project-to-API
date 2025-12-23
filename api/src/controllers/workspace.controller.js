@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const db = require("../utils/db");
+const { buildCreateTableSQL } = require("../utils/schemaGenerator");
 
 class WorkspaceController {
   getAll = async (req, res) => {
@@ -108,6 +109,57 @@ class WorkspaceController {
       return res.status(500).json({ message: err.message });
     }
   };
+
+  deployWorkspace = async (req, res) => {
+    const { workspaceId } = req.params;
+    
+    try {
+      const workspace = await db('workspaces')
+        .where({ id: workspaceId })
+        .first();
+      
+      if (!workspace) {
+        return res.status(404).json({ message: 'Workspace not found' });
+      }
+      
+      const models = await db('models').where({ workspaceId });
+      
+      if (models.length === 0) {
+        return res.status(400).json({ message: 'No models to deploy' });
+      }
+      
+      const results = [];
+      
+      for (const model of models) {
+        try {
+          const fields = await db('fields').where({ modelId: model.id });
+          await buildCreateTableSQL(model, fields, workspace.schemaName, models);
+          
+          results.push({ 
+            model: model.name, 
+            status: 'success' 
+          });
+        } catch (err) {
+          results.push({ 
+            model: model.name, 
+            status: 'error', 
+            error: err.message 
+          });
+        }
+      }
+      
+      return res.status(200).json({
+        message: 'Deployment completed',
+        schemaName: workspace.schemaName,
+        results
+      });
+      
+    } catch (err) {
+      console.error('Deploy error:', err);
+      return res.status(500).json({ message: err.message });
+    }
+  };
+
 }
 
 module.exports = new WorkspaceController();
